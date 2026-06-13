@@ -1,9 +1,9 @@
 ---
-name: finance-reimbursement-automation
+name: yuanfudao-finance-reimbursement
 description: Automate company finance reimbursement workflows for company-reimbursement-domain.example, including travel reimbursement, daily reimbursement, entertainment/meal expenses, invoice discovery from folders, uploaded attachments, email clients such as NetEase Mail Master or corporate email, OCR/classification of invoice PDFs, browser form filling, invoice upload/association, and speed optimization. Use when the user asks to fill, prepare, validate, submit-for-review, automate, or build a reusable workflow for 财务报销, 差旅费申请, 日常报销, 招待费, 发票, 邮箱发票, 网易邮箱大师, 企业微信邮箱, or company reimbursement portal报销.
 ---
 
-# Finance Reimbursement Automation
+# Yuanfudao Finance Reimbursement
 
 Use this skill to prepare company reimbursements in company reimbursement portal / `company-reimbursement-domain.example` from local files, uploaded attachments, email invoices, or natural language instructions.
 

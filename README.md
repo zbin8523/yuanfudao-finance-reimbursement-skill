@@ -1,4 +1,4 @@
-# Finance Reimbursement Automation Skill
+# Yuanfudao Finance Reimbursement Skill
 
 A Codex Skill for preparing company reimbursement forms from invoice attachments, local folders, NetEase Mail Master attachments, or natural-language source descriptions.
 

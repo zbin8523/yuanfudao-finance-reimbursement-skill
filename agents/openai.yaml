@@ -1,7 +1,7 @@
 interface:
-  display_name: "财务报销自动化"
+  display_name: "猿辅导财务报销 Skill"
   short_description: "从文件夹、附件或邮箱识别发票，填写company reimbursement portal报销单并在提交前停住"
-  default_prompt: "Use $finance-reimbursement-automation to find my latest invoice attachments, prepare the right zhenguanyu reimbursement workflow, fill the form, and stop before final submission."
+  default_prompt: "Use $yuanfudao-finance-reimbursement to find my latest invoice attachments, prepare the right zhenguanyu reimbursement workflow, fill the form, and stop before final submission."
 policy:
   allow_implicit_invocation: true
   final_submit_guard: true
