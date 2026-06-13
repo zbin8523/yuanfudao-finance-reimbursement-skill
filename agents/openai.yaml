@@ -1,0 +1,22 @@
+interface:
+  display_name: "财务报销自动化"
+  short_description: "从文件夹、附件或邮箱识别发票，填写company reimbursement portal报销单并在提交前停住"
+  default_prompt: "Use $finance-reimbursement-automation to find my latest invoice attachments, prepare the right zhenguanyu reimbursement workflow, fill the form, and stop before final submission."
+policy:
+  allow_implicit_invocation: true
+  final_submit_guard: true
+runtime_contract:
+  inputs:
+    - local folders or uploaded invoice/payment files
+    - natural language source descriptions such as NetEase Mail Master or corporate webmail
+    - reimbursement workflow hints: travel, daily, entertainment, payment
+  outputs:
+    - staged invoice files
+    - extracted invoice JSON
+    - reimbursement plan JSON
+    - browser form filled to pre-submit state
+  portable_layers:
+    - source_adapter
+    - invoice_extractor
+    - reimbursement_planner
+    - browser_form_adapter
