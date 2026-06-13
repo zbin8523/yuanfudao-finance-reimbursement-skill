@@ -10,6 +10,11 @@ A Codex Skill for preparing company reimbursement forms from invoice attachments
 - Opens the authenticated company reimbursement portal in the user's real Chrome session.
 - Fills the form and stops before final submission.
 
+## Portal
+
+- Portal entry: `https://www.zhenguanyu.com/#/startapply`.
+- Use the user's existing logged-in Chrome profile first. If not logged in, ask the user to log in and resume; do not use a temporary browser.
+
 ## Safety
 
 The final submit action is intentionally not automated. The user must review and click submit manually.

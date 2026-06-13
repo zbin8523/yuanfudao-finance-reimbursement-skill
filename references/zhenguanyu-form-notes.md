@@ -1,6 +1,10 @@
 # Zhenguanyu Reimbursement Notes
 
-Observed travel workflow URL: `https://company-reimbursement-domain.example/#/startapply?pageType=startapply&type=165&status=3`.
+Primary reimbursement entry URL: `https://www.zhenguanyu.com/#/startapply`. Observed travel workflow route may add `pageType=startapply&type=165&status=3`.
+
+Login/session rule:
+
+- Always use the user's already logged-in real Chrome session. If the reimbursement app shows a login page or lacks workflow choices, ask the user to log in and do not switch to a temporary browser.
 
 Known fields:
 

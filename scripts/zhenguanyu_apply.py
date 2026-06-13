@@ -13,7 +13,7 @@ import tempfile
 import time
 from pathlib import Path
 
-TARGET_URL = "https://company-reimbursement-domain.example/#/startapply?pageType=startapply&type=165&status=3"
+TARGET_URL = "https://www.zhenguanyu.com/#/startapply"
 
 
 def chrome_js(js: str) -> str:
@@ -43,6 +43,21 @@ end tell
     return out if out and out != "missing value" else ""
 
 
+def assert_logged_in() -> None:
+    state = read_state()
+    if not state:
+        raise RuntimeError("Cannot read zhenguanyu page state. Ensure real Chrome is open and Apple Events JavaScript is enabled.")
+    try:
+        parsed = json.loads(state)
+        page_text = parsed.get("text") or ""
+    except Exception:
+        page_text = state
+    login_markers = ["登录", "用户名", "密码", "验证码", "请输入手机号", "扫码登录"]
+    app_markers = ["发起申请", "选择申请流程", "我的申请", "我的审批"]
+    if any(marker in page_text for marker in login_markers) and not any(marker in page_text for marker in app_markers):
+        raise RuntimeError("zhenguanyu is not logged in. Please log in in the real Chrome tab, then rerun the reimbursement fill command.")
+
+
 def open_target() -> None:
     script = f'''tell application "Google Chrome"
   if (count of windows) = 0 then make new window
@@ -50,7 +65,7 @@ def open_target() -> None:
   repeat with w from 1 to count of windows
     repeat with i from 1 to count of tabs of window w
       set t to tab i of window w
-      if (URL of t) contains "company-reimbursement-domain.example" then
+      if (URL of t) contains "zhenguanyu.com" then
         set active tab index of window w to i
         set index of window w to 1
         set matched to true
@@ -214,11 +229,11 @@ def main() -> int:
     upload.add_argument("files", nargs="+")
     args = parser.parse_args()
     if args.cmd == "open":
-        open_target(); print("opened")
+        open_target(); time.sleep(2); assert_logged_in(); print("opened")
     elif args.cmd == "read":
         state = read_state()
         if not state:
-            raise RuntimeError("Chrome returned empty page state. Ensure the zhenguanyu tab is active, page loaded, and Apple Events JavaScript is enabled.")
+            raise RuntimeError("Chrome returned empty page state. Ensure the zhenguanyu tab is active, logged in, page loaded, and Apple Events JavaScript is enabled.")
         print(state)
     elif args.cmd == "dry-run":
         print(dry_run(load_plan(args.plan_json)))

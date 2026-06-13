@@ -12,7 +12,7 @@ Use this skill to prepare company reimbursements in company reimbursement portal
 - State at startup: “我会填写并停在提交前，最终提交请你人工复核后点击。”
 - Do not click final `提 交`, `通过`, `发送`, or equivalent side-effect buttons unless the user gives explicit action-time confirmation for that exact submission.
 - Uploading invoice files to the reimbursement site is allowed when the user asked to prepare the reimbursement.
-- Prefer the user’s real Chrome login state for `company-reimbursement-domain.example`; do not use temporary browser profiles for logged-in company systems.
+- Prefer the user’s already logged-in real Chrome session for `https://www.zhenguanyu.com/#/startapply`; do not use temporary browser profiles for logged-in company systems. If the page is not logged in, stop and ask the user to log in with their own account, then continue.
 
 ## Fast Path
 
@@ -26,7 +26,7 @@ Use this skill to prepare company reimbursements in company reimbursement portal
 5. Group invoices by reimbursement type:
    - Travel: flight/rail tickets → `火车/机票费`; hotel ordinary invoice → `住宿费(普票)`; taxi/local transport → `交通费`.
    - Daily reimbursement: meals/entertainment/team costs → `日常报销` appropriate expense type; keep invoice and payment screenshots separated.
-6. Open `https://company-reimbursement-domain.example/#/startapply?pageType=startapply&type=165&status=3` in real Chrome if no target tab exists.
+6. Open `https://www.zhenguanyu.com/#/startapply` in the user's already logged-in real Chrome session if no target tab exists.
 7. Use `scripts/zhenguanyu_apply.py dry-run <plan.json>` to verify totals before touching the page.
 8. Use `scripts/zhenguanyu_apply.py fill <plan.json>` only after stating the final-submit guard.
 9. Upload invoices through the form’s invoice area, select the uploaded invoices, verify invoice total equals application total.
@@ -84,6 +84,15 @@ For local files/folders:
 ```bash
 scripts/run_reimbursement_pipeline.py --workflow daily /path/to/folder-or-files
 ```
+
+
+## Reimbursement Portal Entry
+
+- Primary entry URL: `https://www.zhenguanyu.com/#/startapply`.
+- Use the user's existing logged-in Google Chrome profile first.
+- If no matching tab exists, open the primary entry URL in real Chrome, not an isolated/in-app/temporary browser.
+- After opening, check page text/state. If it appears to be a login page or the reimbursement workflow options are unavailable, stop and tell the user to log in, then resume from the same tab.
+- Workflow-specific routes may add query parameters such as `pageType=startapply&type=165&status=3`, but the base entry above is the canonical starting point.
 
 ## Browser Requirements
 
