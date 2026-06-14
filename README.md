@@ -28,6 +28,28 @@ scripts/zhenguanyu_apply.py open
 scripts/zhenguanyu_apply.py fill /tmp/reimb_run/plan.json
 ```
 
+
+## Batch Mode
+
+Prepare multiple reimbursement drafts from a CSV or JSON batch file. Each row is filled in a separate real Chrome tab and stops before final submit.
+
+Example `batch.csv`:
+
+```csv
+supplier,business_option,workflow,paths,description
+Vendor A,Marketing,daily,/path/to/vendor-a-invoices,June campaign expenses
+Vendor B,Procurement,payment,/path/to/vendor-b-invoices; /path/to/contract.pdf,Service payment
+```
+
+Commands:
+
+```bash
+scripts/batch_reimbursement.py batch.csv --out-dir /tmp/reimb_batch
+scripts/batch_reimbursement.py batch.csv --fill --concurrency 3 --out-dir /tmp/reimb_batch
+```
+
+Concurrency is capped at `5`; final submit is always manual.
+
 ## Portability
 
 The Skill separates source discovery, invoice extraction, planning, and browser filling so the browser adapter can be replaced for OpenClaw, Hermes, Claude App, or other agent runtimes.

@@ -94,6 +94,39 @@ scripts/run_reimbursement_pipeline.py --workflow daily /path/to/folder-or-files
 - After opening, check page text/state. If it appears to be a login page or the reimbursement workflow options are unavailable, stop and tell the user to log in, then resume from the same tab.
 - Workflow-specific routes may add query parameters such as `pageType=startapply&type=165&status=3`, but the base entry above is the canonical starting point.
 
+
+## Batch Mode
+
+Use batch mode when the user wants to prepare many reimbursements for different suppliers, business options, or workflows.
+
+Rules:
+
+- One batch row becomes one reimbursement draft.
+- Group by supplier/vendor, business option/project, reimbursement workflow, and source files.
+- Open one real Chrome tab per draft and fill each tab to the final `提 交` step.
+- Never click final submit; the user reviews each tab and submits manually.
+- Default concurrency is `3` tabs per wave; cap at `5` to avoid browser slowness, frontend state leakage, and invoice duplicate locks.
+- Deduplicate invoice numbers locally before filling. If the finance site reports duplicate/used invoice warnings, stop that tab and mark it for manual review.
+- Produce a batch summary with tab/draft index, supplier, business option, workflow, invoice count, amount, status, and plan path.
+
+Batch file CSV columns or JSON keys:
+
+- `supplier`: supplier/vendor name.
+- `business_option`: business/project/category option.
+- `workflow`: `travel`, `daily`, `payment`, or exact workflow name.
+- `paths`: semicolon-separated invoice folders/files for that draft.
+- `description`: optional description prefix.
+- Optional overrides: `company`, `payment_method`, `currency`, `start_date`, `end_date`.
+
+Commands:
+
+```bash
+scripts/batch_reimbursement.py batch.csv --out-dir /tmp/reimb_batch
+scripts/batch_reimbursement.py batch.csv --fill --concurrency 3 --out-dir /tmp/reimb_batch
+```
+
+The `--fill` command opens/fills multiple Chrome tabs and leaves every tab before final submit.
+
 ## Browser Requirements
 
 For Chrome automation on macOS:

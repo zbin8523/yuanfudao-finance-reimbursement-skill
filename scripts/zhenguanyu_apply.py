@@ -81,6 +81,19 @@ end tell
     subprocess.run(["osascript", "-e", script], check=True)
 
 
+def open_new_target_tab() -> None:
+    script = f'''tell application "Google Chrome"
+  if (count of windows) = 0 then make new window
+  tell front window
+    set newTab to make new tab at end of tabs with properties {{URL:"{TARGET_URL}"}}
+    set active tab index to (count of tabs)
+  end tell
+  activate
+end tell
+'''
+    subprocess.run(["osascript", "-e", script], check=True)
+
+
 def read_state() -> str:
     for _ in range(10):
         state = chrome_js(r"""
@@ -215,21 +228,35 @@ run(ARG_PLAN)
     return result
 
 
+def fill_new_tab_from_plan(plan: dict, upload: bool) -> str:
+    open_new_target_tab()
+    time.sleep(2)
+    assert_logged_in()
+    result = fill_from_plan(plan, upload)
+    return "NEW_TAB\n" + result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("open")
+    sub.add_parser("open-new-tab")
     sub.add_parser("read")
     dry = sub.add_parser("dry-run")
     dry.add_argument("plan_json")
     fill = sub.add_parser("fill")
     fill.add_argument("plan_json")
     fill.add_argument("--upload", action="store_true", help="Only prepares upload helper; never submits")
+    fill_new = sub.add_parser("fill-new-tab")
+    fill_new.add_argument("plan_json")
+    fill_new.add_argument("--upload", action="store_true", help="Only prepares upload helper; never submits")
     upload = sub.add_parser("upload-modal-files")
     upload.add_argument("files", nargs="+")
     args = parser.parse_args()
     if args.cmd == "open":
         open_target(); time.sleep(2); assert_logged_in(); print("opened")
+    elif args.cmd == "open-new-tab":
+        open_new_target_tab(); time.sleep(2); assert_logged_in(); print("opened-new-tab")
     elif args.cmd == "read":
         state = read_state()
         if not state:
@@ -239,6 +266,8 @@ def main() -> int:
         print(dry_run(load_plan(args.plan_json)))
     elif args.cmd == "fill":
         print(fill_from_plan(load_plan(args.plan_json), args.upload))
+    elif args.cmd == "fill-new-tab":
+        print(fill_new_tab_from_plan(load_plan(args.plan_json), args.upload))
     elif args.cmd == "upload-modal-files":
         print(upload_files_to_page(args.files))
         time.sleep(2)

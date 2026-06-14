@@ -199,3 +199,13 @@ Runtime-specific replacements:
 - macOS/Codex: use `zhenguanyu_apply.py` with real Google Chrome Apple Events JavaScript.
 - OpenClaw/Hermes: replace browser adapter with their real-browser/session controller, keeping `plan.json` unchanged.
 - Claude App: use browser automation or ask user to open the authenticated Chrome tab; do not use unauthenticated temporary browsers for company systems.
+
+## Batch Mode Portability
+
+Batch mode is implemented as an orchestration layer over existing portable contracts:
+
+- Input: CSV/JSON rows with `supplier`, `business_option`, `workflow`, `paths`, and optional overrides.
+- Planning: each row produces an independent `plan.json`.
+- Browser: each plan uses `fill-new-tab`, opening a real authenticated Chrome tab and stopping before submit.
+- Summary: `batch_summary.json` records each draft's supplier, business option, workflow, invoice count, total, plan path, and fill status.
+- Migration: other runtimes only need to reimplement `fill-new-tab`; the batch file and plan format stay unchanged.
